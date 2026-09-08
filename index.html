@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SPECTRA VIZ</title>
 
+  <!-- Tag Pendukung PWA / Instalasi App -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d1117">
+
   <!-- Import Google Fonts & Font Alternatif Kasual (Komika Axis & MV Boli) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -762,6 +766,15 @@
         }
       });
     });
+  </script>
+
+  <!-- Registrasi Service Worker untuk PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Register Error: ', err));
+      });
+    }
   </script>
 </body>
 </html>
