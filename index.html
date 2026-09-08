@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0d1117">
 
-  <!-- Import Google Fonts & Font Alternatif Kasual (Komika Axis & MV Boli) -->
+  <!-- Import Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Caveat:wght@700&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@
     header .subtitle {
       font-size: 9.5px;
       font-weight: 900;
-      color: #ffd700;
+      color: #ff0033;
       letter-spacing: 2px;
       margin-top: 3px;
       text-transform: uppercase;
@@ -65,7 +65,6 @@
       text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
     }
     
-    /* Layout Utama 3 Kolom */
     .container { 
       display: flex; 
       justify-content: center;
@@ -77,7 +76,6 @@
       overflow: hidden; 
     }
 
-    /* KOLOM 1: PLAYLIST AUDIO & LYRIC MENU */
     .playlist-column-left {
       width: 270px;
       display: flex;
@@ -89,7 +87,6 @@
       padding-right: 2px;
     }
     
-    /* KOLOM 2: PREVIEW CANVAS & KONTROL */
     .middle-panel { 
       display: flex; 
       flex-direction: column;
@@ -101,7 +98,6 @@
       overflow-y: auto;
     }
 
-    /* KOLOM 3: MENU SETTINGS */
     .right-panel { 
       width: 310px; 
       display: flex; 
@@ -156,14 +152,14 @@
     .bar-kontrol-pemutar { flex-direction: column; gap: 4px; }
     .bar-export-video { padding: 10px 16px; justify-content: space-between; align-items: center; }
 
-    .bar-kontrol-pemutar .title { font-weight: bold; color: #ffd700; font-size: 11px; letter-spacing: 0.5px; }
+    .bar-kontrol-pemutar .title { font-weight: bold; color: #ff0033; font-size: 11px; letter-spacing: 0.5px; }
     
     .player-row-single { display: flex; align-items: center; gap: 10px; width: 100%; }
     
     .btn { background: #21262d; color: #fff; border: 1px solid #30363d; padding: 4px 10px; cursor: pointer; border-radius: 4px; font-size: 10px; font-weight: bold; }
     .btn:disabled { cursor: not-allowed; opacity: 0.6; }
     
-    .btn-green { background: #ffd700; color: #000; font-weight: bold; border: none; }
+    .btn-green { background: #ff0033; color: #ffffff; font-weight: bold; border: none; }
     
     input[type="range"] { 
       appearance: none; -webkit-appearance: none;
@@ -173,9 +169,9 @@
     input[type="range"]:disabled { cursor: not-allowed; opacity: 0.5; }
 
     input[type="range"]::-webkit-slider-thumb {
-      appearance: none; -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #ffd700; cursor: pointer; border: none;
+      appearance: none; -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #ff0033; cursor: pointer; border: none;
     }
-    input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #ffd700; cursor: pointer; border: none; }
+    input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #ff0033; cursor: pointer; border: none; }
     
     #timeSlider { flex: 1; }
     #volSlider { width: 80px; flex: none; }
@@ -187,7 +183,7 @@
     
     .export-progress-container { display: flex; align-items: center; gap: 12px; width: 100%; height: 34px; }
     .progress-track { flex: 1; height: 26px; background: #0d1117; border-radius: 5px; position: relative; overflow: hidden; border: 1px solid #30363d; }
-    .progress-fill { width: 0%; height: 100%; background: #ffd700; border-radius: 4px 0 0 4px; transition: width 0.1s linear; }
+    .progress-fill { width: 0%; height: 100%; background: #ff0033; border-radius: 4px 0 0 4px; transition: width 0.1s linear; }
     .progress-text { position: absolute; width: 100%; height: 100%; top: 0; left: 0; display: flex; justify-content: center; align-items: center; color: #ffffff; font-size: 11px; font-weight: bold; font-family: monospace; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
     
     .btn-danger { 
@@ -219,7 +215,7 @@
     input[type="color"]::-webkit-color-swatch { border: none; border-radius: 2px; }
 
     .section { background: #161b22; border: 1px solid #21262d; border-radius: 6px; padding: 6px 10px; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .section-header { font-weight: bold; color: #ffd700; display: flex; justify-content: space-between; align-items: center; font-size: 10px; margin-bottom: 2px; }
+    .section-header { font-weight: bold; color: #ff0033; display: flex; justify-content: space-between; align-items: center; font-size: 10px; margin-bottom: 2px; }
     
     .playlist-card {
       background: #161b22;
@@ -276,7 +272,7 @@
     
     .playlist-item:active { cursor: grabbing; }
     .playlist-item:hover { background: #21262d; border-color: #30363d; }
-    .playlist-item.playing { background: #ffd700; color: #000; font-weight: bold; border-color: #ffd700; }
+    .playlist-item.playing { background: #ff0033; color: #ffffff; font-weight: bold; border-color: #ff0033; }
     .playlist-item.dragging { opacity: 0.4; background: #30363d; }
 
     .drag-handle { margin-right: 6px; color: #8b949e; font-size: 11px; cursor: grab; }
@@ -295,7 +291,7 @@
       resize: vertical;
       outline: none;
     }
-    .lyric-editor:focus { border-color: #ffd700; }
+    .lyric-editor:focus { border-color: #ff0033; }
 
     .row { display: flex; justify-content: space-between; align-items: center; gap: 6px; min-height: 19px; }
     .row label { width: 90px; color: #8b949e; font-size: 9px; text-transform: uppercase; font-weight: 700; flex-shrink: 0; }
@@ -314,13 +310,12 @@
     .btn-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; flex: 1; width: 100%; }
     
     .btn-option { background: #0d1117; border: 1px solid #30363d; color: #8b949e; padding: 2px 0; font-size: 8px; font-weight: bold; cursor: pointer; border-radius: 3px; text-align: center; }
-    .btn-option.active { background: #ffd700; color: #000; border-color: #ffd700; font-weight: 900; }
+    .btn-option.active { background: #ff0033; color: #ffffff; border-color: #ff0033; font-weight: 900; }
 
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
   </style>
   
-  <!-- MP4 Muxer Library untuk H264 MP4 Export MP4 Muxer CDN -->
   <script src="https://cdn.jsdelivr.net/npm/mp4-muxer@5.1.4/build/mp4-muxer.min.js"></script>
 </head>
 <body>
@@ -350,7 +345,6 @@
       <div class="section">
         <div class="section-header">MENU LYRIC</div>
         
-        <!-- 1. Import Lyric SRT/LRC -->
         <div class="row">
           <label>IMPORT SRT/LRC</label>
           <div class="file-input-wrapper">
@@ -361,13 +355,11 @@
           <input type="file" id="lyricInput" accept=".srt,.txt,.lrc" style="display: none;">
         </div>
 
-        <!-- 2. Edit Teks Lyric -->
         <div class="row" style="height: auto; flex-direction: column; align-items: flex-start; gap: 4px;">
           <label style="width: 100%;">EDIT TEKS LYRIC</label>
           <textarea class="lyric-editor" id="lyricTextEditor" placeholder="[00:01.00] Ketik atau tempel lirik di sini..."></textarea>
         </div>
 
-        <!-- 3. Jenis Font -->
         <div class="row">
           <label>JENIS FONT</label>
           <select id="lyricFont">
@@ -379,7 +371,6 @@
           </select>
         </div>
 
-        <!-- 4. Warna Lyric -->
         <div class="row">
           <label>COLOR</label>
           <div style="flex: 1; display: flex; justify-content: flex-end; align-items: center;">
@@ -387,7 +378,6 @@
           </div>
         </div>
 
-        <!-- 5. Ukuran & Opacity -->
         <div class="row">
           <label>FONT SIZE</label>
           <input type="range" id="lyricSize" min="10" max="100" value="36">
@@ -508,8 +498,8 @@
         <div class="row">
           <label>SPECTRUM</label>
           <div style="flex: 1; display: flex; align-items: center; gap: 6px; justify-content: flex-end;">
-            <input type="checkbox" id="showSpectrumToggle" checked style="accent-color: #ffd700; width: 16px; height: 16px; cursor: pointer;">
-            <span id="spectrumStatusText" style="color: #ffd700; font-size: 9px; font-weight: bold;">AKTIF</span>
+            <input type="checkbox" id="showSpectrumToggle" checked style="accent-color: #ff0033; width: 16px; height: 16px; cursor: pointer;">
+            <span id="spectrumStatusText" style="color: #ff0033; font-size: 9px; font-weight: bold;">AKTIF</span>
           </div>
         </div>
 
@@ -527,14 +517,14 @@
           <div class="row">
             <label>MODE RGB</label>
             <div style="flex: 1; display: flex; align-items: center; gap: 6px; justify-content: flex-end;">
-              <input type="checkbox" id="rgbMode" style="accent-color: #ffd700;">
+              <input type="checkbox" id="rgbMode" style="accent-color: #ff0033;">
               <span style="color: #fff; font-size: 8.5px; font-weight: bold;">RGB / PELANGI</span>
             </div>
           </div>
           <div class="row">
             <label>COLOR</label>
             <div style="flex: 1; display: flex; justify-content: flex-end; align-items: center;">
-              <input type="color" id="hueColor" value="#ffd700">
+              <input type="color" id="hueColor" value="#ff0033">
             </div>
           </div>
           <div class="row">
@@ -615,7 +605,7 @@
   <script src="main.js"></script>
 
   <script>
-    window.lyricPos = window.lyricPos || { x: 0.5, y: 0.83 }; // Relative normalized position
+    window.lyricPos = window.lyricPos || { x: 0.5, y: 0.83 };
     let isDraggingLyric = false;
     let lyricDragOffset = { x: 0, y: 0 };
 
@@ -632,7 +622,7 @@
         window.isSpectrumActive = showSpectrumToggle.checked;
         if (window.isSpectrumActive) {
           spectrumStatusText.innerText = "AKTIF";
-          spectrumStatusText.style.color = "#ffd700";
+          spectrumStatusText.style.color = "#ff0033";
           spectrumControls.style.opacity = "1";
           spectrumControls.style.pointerEvents = "auto";
         } else {
@@ -645,6 +635,7 @@
 
       if (showSpectrumToggle) {
         showSpectrumToggle.addEventListener('change', updateSpectrumState);
+      updateSpectrumState();
       }
 
       const lyricInput = document.getElementById('lyricInput');
@@ -768,7 +759,7 @@
     });
   </script>
 
-  <!-- Registrasi Service Worker untuk PWA -->
+  <!-- Registrasi Service Worker PWA -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
