@@ -1,21 +1,21 @@
 {
-  "short_name": "SPECTRA VIZ",
-  "name": "SPECTRA VIZ - Audio Visualizer & Exporter",
+  "short_name": "Aesthetix",
+  "name": "Aesthetix Studio",
   "icons": [
     {
-      "src": "https://via.placeholder.com/192.png",
+      "src": "icon-192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "https://via.placeholder.com/512.png",
+      "src": "icon-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
   "start_url": "./index.html",
-  "background_color": "#0b0914",
-  "theme_color": "#151124",
+  "background_color": "#0a0a0c",
+  "theme_color": "#121212",
   "display": "standalone",
-  "orientation": "any"
+  "orientation": "portrait"
 }
