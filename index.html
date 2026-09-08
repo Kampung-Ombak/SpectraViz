@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPECTRA VIZ</title>
+
+  <!-- Import Google Fonts & Font Alternatif Kasual (Komika Axis & MV Boli) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Caveat:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Segoe UI', Tahoma, sans-serif; 
+    }
+
+    body { 
+      background-color: #0d1117; 
+      color: #e0e6ed; 
+      font-size: 11px; 
+      height: 100vh; 
+      display: flex; 
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      overflow: hidden; 
+      padding: 6px 16px;
+    }
+    
+    header { 
+      display: flex; 
+      flex-direction: column;
+      justify-content: center; 
+      align-items: center; 
+      flex-shrink: 0;
+      margin-bottom: 6px;
+    }
+
+    header h1 {
+      font-size: 32px; 
+      font-weight: 900;
+      color: #ff0033; 
+      letter-spacing: 4px; 
+      line-height: 1;
+      -webkit-text-stroke: 1.5px #ffffff;
+      text-shadow: 0px 3px 8px rgba(0, 0, 0, 0.9);
+    }
+
+    header .subtitle {
+      font-size: 9.5px;
+      font-weight: 900;
+      color: #ffd700;
+      letter-spacing: 2px;
+      margin-top: 3px;
+      text-transform: uppercase;
+      -webkit-text-stroke: 0.5px #c0c0c0;
+      text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+    
+    /* Layout Utama 3 Kolom */
+    .container { 
+      display: flex; 
+      justify-content: center;
+      align-items: stretch;
+      gap: 12px; 
+      width: 98vw;
+      max-width: 1600px;
+      height: calc(100vh - 68px);
+      overflow: hidden; 
+    }
+
+    /* KOLOM 1: PLAYLIST AUDIO & LYRIC MENU */
+    .playlist-column-left {
+      width: 270px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+      height: 100%;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+    
+    /* KOLOM 2: PREVIEW CANVAS & KONTROL */
+    .middle-panel { 
+      display: flex; 
+      flex-direction: column;
+      flex: 1;
+      height: 100%;
+      min-width: 0;
+      justify-content: flex-start;
+      gap: 6px;
+      overflow-y: auto;
+    }
+
+    /* KOLOM 3: MENU SETTINGS */
+    .right-panel { 
+      width: 310px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 5px; 
+      height: 100%;
+      overflow-y: auto;
+      padding-right: 2px;
+      flex-shrink: 0;
+    }
+
+    .canvas-container { 
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000; 
+      border: 2px solid #161b22; 
+      border-radius: 6px; 
+      position: relative; 
+      overflow: hidden; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      flex-shrink: 0;
+    }
+
+    canvas { 
+      width: 100%; 
+      height: 100%; 
+      display: block; 
+      object-fit: contain; 
+      cursor: default; 
+    }
+    
+    .bar-kontrol-pemutar, .bar-export-video { 
+      background: #161b22; 
+      border: 1.5px solid #21262d; 
+      border-radius: 8px; 
+      padding: 8px 14px; 
+      display: flex; 
+      width: 100%;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      flex-shrink: 0;
+      transition: opacity 0.3s;
+    }
+
+    .bar-kontrol-pemutar.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .bar-kontrol-pemutar { flex-direction: column; gap: 4px; }
+    .bar-export-video { padding: 10px 16px; justify-content: space-between; align-items: center; }
+
+    .bar-kontrol-pemutar .title { font-weight: bold; color: #ffd700; font-size: 11px; letter-spacing: 0.5px; }
+    
+    .player-row-single { display: flex; align-items: center; gap: 10px; width: 100%; }
+    
+    .btn { background: #21262d; color: #fff; border: 1px solid #30363d; padding: 4px 10px; cursor: pointer; border-radius: 4px; font-size: 10px; font-weight: bold; }
+    .btn:disabled { cursor: not-allowed; opacity: 0.6; }
+    
+    .btn-green { background: #ffd700; color: #000; font-weight: bold; border: none; }
+    
+    input[type="range"] { 
+      appearance: none; -webkit-appearance: none;
+      background: linear-gradient(to right, #8c7ae6 0%, #8c7ae6 50%, #ffffff 50%, #ffffff 100%);
+      height: 6px; border-radius: 3px; outline: none; flex: 1;
+    }
+    input[type="range"]:disabled { cursor: not-allowed; opacity: 0.5; }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none; -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #ffd700; cursor: pointer; border: none;
+    }
+    input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #ffd700; cursor: pointer; border: none; }
+    
+    #timeSlider { flex: 1; }
+    #volSlider { width: 80px; flex: none; }
+
+    .bar-export-video label { color: #8b949e; font-size: 12px; font-weight: bold; letter-spacing: 0.5px; }
+    .bar-export-video select { max-width: 160px; font-size: 12px; padding: 4px 10px; height: 34px; border-radius: 5px; background: #0d1117; color: #fff; border: 1px solid #30363d; font-weight: 700; cursor: pointer; }
+
+    .btn-export-large { padding: 6px 24px; font-size: 12px; font-weight: 900; letter-spacing: 1px; height: 34px; border-radius: 5px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.5); }
+    
+    .export-progress-container { display: flex; align-items: center; gap: 12px; width: 100%; height: 34px; }
+    .progress-track { flex: 1; height: 26px; background: #0d1117; border-radius: 5px; position: relative; overflow: hidden; border: 1px solid #30363d; }
+    .progress-fill { width: 0%; height: 100%; background: #ffd700; border-radius: 4px 0 0 4px; transition: width 0.1s linear; }
+    .progress-text { position: absolute; width: 100%; height: 100%; top: 0; left: 0; display: flex; justify-content: center; align-items: center; color: #ffffff; font-size: 11px; font-weight: bold; font-family: monospace; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+    
+    .btn-danger { 
+      background: #e53935; 
+      color: #fff; 
+      font-weight: bold; 
+      border: none; 
+      border-radius: 3px; 
+      cursor: pointer; 
+      padding: 2px 6px; 
+      font-size: 9px; 
+      line-height: 1;
+    }
+    
+    .btn-close { 
+      background: #e53935; 
+      color: #fff; 
+      border: none; 
+      font-weight: bold; 
+      padding: 1px 4px; 
+      cursor: pointer; 
+      border-radius: 3px; 
+      font-size: 7.5px; 
+      line-height: 1;
+    }
+
+    input[type="color"] { -webkit-appearance: none; border: 1px solid #30363d; border-radius: 3px; width: 34px; height: 18px; cursor: pointer; background: none; padding: 0; }
+    input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    input[type="color"]::-webkit-color-swatch { border: none; border-radius: 2px; }
+
+    .section { background: #161b22; border: 1px solid #21262d; border-radius: 6px; padding: 6px 10px; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .section-header { font-weight: bold; color: #ffd700; display: flex; justify-content: space-between; align-items: center; font-size: 10px; margin-bottom: 2px; }
+    
+    .playlist-card {
+      background: #161b22;
+      border: 1.5px solid #21262d;
+      border-radius: 8px;
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      min-height: 380px;
+      max-height: 480px;
+    }
+
+    .playlist-drop-area { 
+      background: #0d1117; 
+      border: 1px dashed #30363d; 
+      flex: 1; 
+      border-radius: 4px; 
+      overflow-y: auto; 
+      padding: 8px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 4px; 
+      position: relative; 
+    }
+    
+    .playlist-placeholder { 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      height: 100%; 
+      font-size: 9.5px; 
+      color: #8b949e; 
+      text-align: center; 
+      pointer-events: none; 
+      font-weight: 600; 
+    }
+    
+    .playlist-item { 
+      font-size: 10px; 
+      padding: 6px 8px; 
+      cursor: grab; 
+      border-radius: 4px; 
+      color: #c9d1d9; 
+      background: #161b22;
+      border: 1px solid #21262d;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      transition: background 0.15s, transform 0.15s;
+    }
+    
+    .playlist-item:active { cursor: grabbing; }
+    .playlist-item:hover { background: #21262d; border-color: #30363d; }
+    .playlist-item.playing { background: #ffd700; color: #000; font-weight: bold; border-color: #ffd700; }
+    .playlist-item.dragging { opacity: 0.4; background: #30363d; }
+
+    .drag-handle { margin-right: 6px; color: #8b949e; font-size: 11px; cursor: grab; }
+
+    .lyric-editor {
+      width: 100%;
+      height: 90px;
+      background: #0d1117;
+      color: #4af626;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      padding: 6px 8px;
+      font-family: monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      resize: vertical;
+      outline: none;
+    }
+    .lyric-editor:focus { border-color: #ffd700; }
+
+    .row { display: flex; justify-content: space-between; align-items: center; gap: 6px; min-height: 19px; }
+    .row label { width: 90px; color: #8b949e; font-size: 9px; text-transform: uppercase; font-weight: 700; flex-shrink: 0; }
+    .val-text { width: 24px; text-align: right; color: #fff; font-size: 9.5px; font-family: monospace; font-weight: bold; flex-shrink: 0; }
+    
+    .file-input-wrapper { display: flex; align-items: center; gap: 4px; flex: 1; }
+    .btn-file { background: #21262d; color: #fff; font-weight: bold; border: 1px solid #30363d; padding: 2px 6px; font-size: 8.5px; cursor: pointer; border-radius: 3px; }
+    .file-name { color: #8b949e; font-size: 8.5px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+    
+    select { background: #0d1117; color: #fff; border: 1px solid #30363d; padding: 2px 4px; font-size: 9px; flex: 1; border-radius: 3px; font-weight: 600; height: 19px; }
+    select:disabled, input:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-container { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .btn-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; flex: 1; width: 100%; }
+    .btn-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; flex: 1; width: 100%; }
+    .btn-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; flex: 1; width: 100%; }
+    
+    .btn-option { background: #0d1117; border: 1px solid #30363d; color: #8b949e; padding: 2px 0; font-size: 8px; font-weight: bold; cursor: pointer; border-radius: 3px; text-align: center; }
+    .btn-option.active { background: #ffd700; color: #000; border-color: #ffd700; font-weight: 900; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+  </style>
+  
+  <!-- MP4 Muxer Library untuk H264 MP4 Export MP4 Muxer CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mp4-muxer@5.1.4/build/mp4-muxer.min.js"></script>
+</head>
+<body>
+
+  <header>
+    <h1>SPECTRA VIZ</h1>
+    <div class="subtitle">VISUALIZER AUDIO & VIDEO</div>
+  </header>
+
+  <div class="container">
+    
+    <!-- KOLOM 1: PLAYLIST AUDIO & MENU LYRIC -->
+    <div class="playlist-column-left">
+      <div class="playlist-card">
+        <div class="section-header">
+          <span>PLAYLIST AUDIO (DRAG URUTAN)</span>
+          <button class="btn-danger" id="clearList">CLEAR ALL</button>
+        </div>
+        <div class="playlist-drop-area" id="dropZone">
+          <div class="playlist-placeholder" id="playlistPlaceholder">+ DRAG & DROP AUDIO / KLIK DI SINI</div>
+          <div id="playlistBox" style="display: flex; flex-direction: column; gap: 4px;"></div>
+        </div>
+        <input type="file" id="audioInput" accept="audio/*,.mp3,.wav,.flac,.ogg,.m4a,.aac" multiple style="display: none;">
+      </div>
+
+      <!-- BAR MENU LYRIC -->
+      <div class="section">
+        <div class="section-header">MENU LYRIC</div>
+        
+        <!-- 1. Import Lyric SRT/LRC -->
+        <div class="row">
+          <label>IMPORT SRT/LRC</label>
+          <div class="file-input-wrapper">
+            <button class="btn-file" onclick="document.getElementById('lyricInput').click()">CHOOSE</button>
+            <span class="file-name" id="lyricFileName">NO FILE</span>
+            <button class="btn-close" id="clearLyric">✖</button>
+          </div>
+          <input type="file" id="lyricInput" accept=".srt,.txt,.lrc" style="display: none;">
+        </div>
+
+        <!-- 2. Edit Teks Lyric -->
+        <div class="row" style="height: auto; flex-direction: column; align-items: flex-start; gap: 4px;">
+          <label style="width: 100%;">EDIT TEKS LYRIC</label>
+          <textarea class="lyric-editor" id="lyricTextEditor" placeholder="[00:01.00] Ketik atau tempel lirik di sini..."></textarea>
+        </div>
+
+        <!-- 3. Jenis Font -->
+        <div class="row">
+          <label>JENIS FONT</label>
+          <select id="lyricFont">
+            <option value="Arial, sans-serif">ARIAL</option>
+            <option value="'Komika Axis', 'Comic Neue', sans-serif">KOMIKA AXIS</option>
+            <option value="Calibri, sans-serif">CALIBRI</option>
+            <option value="'MV Boli', 'Caveat', cursive">MV BOLI</option>
+            <option value="'Segoe UI', sans-serif" selected>SEGOE UI</option>
+          </select>
+        </div>
+
+        <!-- 4. Warna Lyric -->
+        <div class="row">
+          <label>COLOR</label>
+          <div style="flex: 1; display: flex; justify-content: flex-end; align-items: center;">
+            <input type="color" id="lyricColor" value="#ffffff">
+          </div>
+        </div>
+
+        <!-- 5. Ukuran & Opacity -->
+        <div class="row">
+          <label>FONT SIZE</label>
+          <input type="range" id="lyricSize" min="10" max="100" value="36">
+          <span class="val-text" id="val_lyricSize">36</span>
+        </div>
+        <div class="row">
+          <label>OPACITY</label>
+          <input type="range" id="lyricOpacity" min="0" max="100" value="100">
+          <span class="val-text" id="val_lyricOpacity">100</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KOLOM 2: CANVAS PREVIEW & KONTROL -->
+    <div class="middle-panel">
+      <div class="canvas-container">
+        <canvas id="vizCanvas" width="1280" height="720"></canvas>
+      </div>
+      
+      <div class="bar-kontrol-pemutar" id="playerControlBar">
+        <div class="title">KONTROL PEMUTAR</div>
+        <div class="player-row-single">
+          <input type="range" id="timeSlider" value="0" min="0" max="100">
+          <button class="btn" id="prevBtn">⏮</button>
+          <button class="btn btn-green" id="playBtn">PLAY</button>
+          <button class="btn" id="nextBtn">⏭</button>
+          <span id="timeText" style="font-family: monospace; color: #cfd8dc; font-size: 10.5px; font-weight: bold; white-space: nowrap;">00:00 / 00:00</span>
+          <span style="font-size: 11px;">🔊</span>
+          <input type="range" id="volSlider" value="100" min="0" max="100">
+        </div>
+      </div>
+
+      <div class="bar-export-video">
+        <div id="exportNormalView" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label>EXPORT RESOLUSI:</label>
+            <select id="exportRes">
+              <option value="1080">1080p (Full HD)</option>
+              <option value="720" selected>720p (HD)</option>
+            </select>
+          </div>
+          <button class="btn btn-green btn-export-large" id="exportBtn">EXPORT MP4</button>
+        </div>
+
+        <div id="exportProgressView" class="export-progress-container" style="display: none;">
+          <div class="progress-track">
+            <div class="progress-fill" id="exportProgressFill"></div>
+            <div class="progress-text" id="exportProgressText">0%</div>
+          </div>
+          <button class="btn-danger btn-export-large" id="cancelRenderBtn">BATAL</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- KOLOM 3: MENU SETTINGS -->
+    <div class="right-panel">
+      <div class="section">
+        <div class="section-header">BACKGROUND SETTING</div>
+        <div class="row">
+          <label>IMPORT</label>
+          <div class="file-input-wrapper">
+            <button class="btn-file" onclick="document.getElementById('bgInput').click()">CHOOSE</button>
+            <span class="file-name" id="bgName">NO FILE</span>
+            <button class="btn-close" id="clearBg">✖</button>
+          </div>
+          <input type="file" id="bgInput" accept="image/*" style="display: none;">
+        </div>
+        <div class="row">
+          <label>LIGHTNESS</label>
+          <input type="range" id="bgBrightness" min="0" max="100" value="50">
+          <span class="val-text" id="val_bgBrightness">50</span>
+        </div>
+        <div class="row">
+          <label>BG EFEK</label>
+          <div class="btn-grid-4" id="bgMotionGroup">
+            <button class="btn-option active" data-bgeffect="NORMAL">NORMAL</button>
+            <button class="btn-option" data-bgeffect="BEAT">BEAT</button>
+            <button class="btn-option" data-bgeffect="SNAKE">SNAKE</button>
+            <button class="btn-option" data-bgeffect="VIBRA">VIBRA</button>
+          </div>
+        </div>
+        <div class="row">
+          <label>STRENGTH</label>
+          <input type="range" id="bgEffectScale" min="0" max="100" value="40">
+          <span class="val-text" id="val_bgEffectScale">40</span>
+        </div>
+        <div class="row">
+          <label>EFEK</label>
+          <div class="btn-grid-5" id="bgEffectsGroup">
+            <button class="btn-option active" data-effect="NORMAL">NORMAL</button>
+            <button class="btn-option" data-effect="AIR">AIR</button>
+            <button class="btn-option" data-effect="SALJU">SALJU</button>
+            <button class="btn-option" data-effect="ASAP">ASAP</button>
+            <button class="btn-option" data-effect="LIGHT">LIGHT</button>
+          </div>
+        </div>
+        <div class="row">
+          <label>INTENSITY</label>
+          <input type="range" id="effectIntensity" min="0" max="100" value="50">
+          <span class="val-text" id="val_effectIntensity">50</span>
+        </div>
+        <div class="row">
+          <label>SPEED</label>
+          <input type="range" id="effectSpeed" min="0" max="100" value="25">
+          <span class="val-text" id="val_effectSpeed">25</span>
+        </div>
+        <div class="row">
+          <label>OPACITY</label>
+          <input type="range" id="effectOpacity" min="0" max="100" value="80">
+          <span class="val-text" id="val_effectOpacity">80</span>
+        </div>
+      </div>
+
+      <!-- BAR VISUAL SPECTRUM -->
+      <div class="section">
+        <div class="section-header">VISUAL SPECTRUM</div>
+        
+        <div class="row">
+          <label>SPECTRUM</label>
+          <div style="flex: 1; display: flex; align-items: center; gap: 6px; justify-content: flex-end;">
+            <input type="checkbox" id="showSpectrumToggle" checked style="accent-color: #ffd700; width: 16px; height: 16px; cursor: pointer;">
+            <span id="spectrumStatusText" style="color: #ffd700; font-size: 9px; font-weight: bold;">AKTIF</span>
+          </div>
+        </div>
+
+        <div class="spectrum-controls-group" id="spectrumControls">
+          <div class="row">
+            <label>JENIS SPECTRUM</label>
+            <select id="specType">
+              <option value="BARS">BARS SPECTRUM</option>
+              <option value="BAR1">BAR 1</option>
+              <option value="WAVE">WAVEFORM</option>
+              <option value="CIRCLE">CIRCULAR</option>
+              <option value="CIRCLE1">CIRCLE 1</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>MODE RGB</label>
+            <div style="flex: 1; display: flex; align-items: center; gap: 6px; justify-content: flex-end;">
+              <input type="checkbox" id="rgbMode" style="accent-color: #ffd700;">
+              <span style="color: #fff; font-size: 8.5px; font-weight: bold;">RGB / PELANGI</span>
+            </div>
+          </div>
+          <div class="row">
+            <label>COLOR</label>
+            <div style="flex: 1; display: flex; justify-content: flex-end; align-items: center;">
+              <input type="color" id="hueColor" value="#ffd700">
+            </div>
+          </div>
+          <div class="row">
+            <label>BAR WIDTH</label>
+            <input type="range" id="scaleWidth" min="0" max="100" value="50">
+            <span class="val-text" id="val_scaleWidth">50</span>
+          </div>
+          <div class="row">
+            <label>BAR HEIGHT</label>
+            <input type="range" id="barScale" min="0" max="100" value="50">
+            <span class="val-text" id="val_barScale">50</span>
+          </div>
+          <div class="row">
+            <label>SCALE BAR</label>
+            <input type="range" id="barDensity" min="0" max="100" value="50">
+            <span class="val-text" id="val_barDensity">50</span>
+          </div>
+          <div class="row">
+            <label>BOLD BAR</label>
+            <input type="range" id="barWidth" min="0" max="100" value="15">
+            <span class="val-text" id="val_barWidth">15</span>
+          </div>
+          <div class="row">
+            <label>OPACITY</label>
+            <input type="range" id="spectrumOpacity" min="0" max="100" value="100">
+            <span class="val-text" id="val_spectrumOpacity">100</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">LOGO</div>
+        <div class="row">
+          <label>IMPORT LOGO</label>
+          <div class="file-input-wrapper">
+            <button class="btn-file" onclick="document.getElementById('logoInput').click()">CHOOSE</button>
+            <span class="file-name" id="logoName">NO FILE</span>
+            <button class="btn-close" id="clearLogo">✖</button>
+          </div>
+          <input type="file" id="logoInput" accept="image/*" style="display: none;">
+        </div>
+        <div class="row">
+          <label>SIZE</label>
+          <input type="range" id="logoSize" min="0" max="100" value="50">
+          <span class="val-text" id="val_logoSize">50</span>
+        </div>
+        <div class="row">
+          <label>OPACITY</label>
+          <input type="range" id="logoOpacity" min="0" max="100" value="100">
+          <span class="val-text" id="val_logoOpacity">100</span>
+        </div>
+        <div class="row" style="height: auto; align-items: flex-start;">
+          <label style="margin-top: 2px;">EFEK LOGO</label>
+          <div class="btn-container" id="logoEffectsGroup">
+            <div class="btn-grid-4">
+              <button class="btn-option active" data-logoeffect="NORMAL">NORMAL</button>
+              <button class="btn-option" data-logoeffect="BEAT">BEAT</button>
+              <button class="btn-option" data-logoeffect="SNAKE">SNAKE</button>
+              <button class="btn-option" data-logoeffect="GETAR">GETAR</button>
+            </div>
+            <div class="btn-grid-2" style="margin-top: 2px;">
+              <button class="btn-option" data-logoeffect="PUTAR_R">PUTAR R</button>
+              <button class="btn-option" data-logoeffect="PUTAR_L">PUTAR L</button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <label>SPEED EFEK</label>
+          <input type="range" id="logoSpeed" min="0" max="100" value="25">
+          <span class="val-text" id="val_logoSpeed">25</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="audio"></audio>
+
+  <script src="main.js"></script>
+
+  <script>
+    window.lyricPos = window.lyricPos || { x: 0.5, y: 0.83 }; // Relative normalized position
+    let isDraggingLyric = false;
+    let lyricDragOffset = { x: 0, y: 0 };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const canvas = document.getElementById('vizCanvas');
+      const audio = document.getElementById('audio');
+
+      window.isSpectrumActive = true;
+      const showSpectrumToggle = document.getElementById('showSpectrumToggle');
+      const spectrumStatusText = document.getElementById('spectrumStatusText');
+      const spectrumControls = document.getElementById('spectrumControls');
+
+      function updateSpectrumState() {
+        window.isSpectrumActive = showSpectrumToggle.checked;
+        if (window.isSpectrumActive) {
+          spectrumStatusText.innerText = "AKTIF";
+          spectrumStatusText.style.color = "#ffd700";
+          spectrumControls.style.opacity = "1";
+          spectrumControls.style.pointerEvents = "auto";
+        } else {
+          spectrumStatusText.innerText = "TIDAK AKTIF";
+          spectrumStatusText.style.color = "#e53935";
+          spectrumControls.style.opacity = "0.3";
+          spectrumControls.style.pointerEvents = "none";
+        }
+      }
+
+      if (showSpectrumToggle) {
+        showSpectrumToggle.addEventListener('change', updateSpectrumState);
+      }
+
+      const lyricInput = document.getElementById('lyricInput');
+      const lyricFileName = document.getElementById('lyricFileName');
+      const clearLyric = document.getElementById('clearLyric');
+      const lyricTextEditor = document.getElementById('lyricTextEditor');
+      
+      window.parsedLyrics = [];
+
+      function parseLyrics(text) {
+        window.parsedLyrics = [];
+        if (!text.trim()) return;
+
+        const lines = text.split('\n');
+        const srtRegex = /(\d{2}):(\d{2}):(\d{2})[,.](\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2})[,.](\d{3})/;
+        const lrcRegex = /\[(\d{2}):(\d{2})[.:](\d{2,3})\](.*)/;
+
+        let isSrt = false;
+        let tempStartTime = null;
+
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i].trim();
+          
+          const srtMatch = line.match(srtRegex);
+          if (srtMatch) {
+            isSrt = true;
+            const startSec = parseInt(srtMatch[1])*3600 + parseInt(srtMatch[2])*60 + parseInt(srtMatch[3]) + parseInt(srtMatch[4])/1000;
+            tempStartTime = startSec;
+            continue;
+          }
+
+          if (isSrt && tempStartTime !== null && line !== '' && !/^\d+$/.test(line)) {
+            window.parsedLyrics.push({ time: tempStartTime, text: line });
+            tempStartTime = null;
+            continue;
+          }
+
+          const lrcMatch = line.match(lrcRegex);
+          if (lrcMatch) {
+            const min = parseInt(lrcMatch[1]);
+            const sec = parseInt(lrcMatch[2]);
+            const ms = parseInt(lrcMatch[3]);
+            const time = min * 60 + sec + (ms > 99 ? ms / 1000 : ms / 100);
+            const lyricText = lrcMatch[4].trim();
+            if (lyricText) {
+              window.parsedLyrics.push({ time, text: lyricText });
+            }
+          }
+        }
+
+        window.parsedLyrics.sort((a, b) => a.time - b.time);
+      }
+
+      lyricTextEditor.addEventListener('input', () => parseLyrics(lyricTextEditor.value));
+
+      lyricInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        lyricFileName.innerText = file.name;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          lyricTextEditor.value = event.target.result;
+          parseLyrics(event.target.result);
+        };
+        reader.readAsText(file);
+      });
+
+      clearLyric.addEventListener('click', () => {
+        lyricInput.value = '';
+        lyricFileName.innerText = 'NO FILE';
+        lyricTextEditor.value = '';
+        window.parsedLyrics = [];
+      });
+
+      ['lyricSize', 'lyricOpacity'].forEach(id => {
+        const input = document.getElementById(id);
+        const valText = document.getElementById('val_' + id);
+        if (input && valText) {
+          input.addEventListener('input', () => valText.innerText = input.value);
+        }
+      });
+
+      function getCanvasMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        return {
+          x: (e.clientX - rect.left) * scaleX,
+          y: (e.clientY - rect.top) * scaleY
+        };
+      }
+
+      canvas.addEventListener('mousedown', (e) => {
+        const mouse = getCanvasMousePos(e);
+        const lyricAbsX = window.lyricPos.x * canvas.width;
+        const lyricAbsY = window.lyricPos.y * canvas.height;
+        const dist = Math.hypot(mouse.x - lyricAbsX, mouse.y - lyricAbsY);
+        if (dist < 120) {
+          isDraggingLyric = true;
+          lyricDragOffset.x = mouse.x - lyricAbsX;
+          lyricDragOffset.y = mouse.y - lyricAbsY;
+          canvas.style.cursor = 'grabbing';
+        }
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (isDraggingLyric) {
+          const mouse = getCanvasMousePos(e);
+          window.lyricPos.x = (mouse.x - lyricDragOffset.x) / canvas.width;
+          window.lyricPos.y = (mouse.y - lyricDragOffset.y) / canvas.height;
+        }
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDraggingLyric) {
+          isDraggingLyric = false;
+          canvas.style.cursor = 'default';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
