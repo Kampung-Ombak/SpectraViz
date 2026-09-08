@@ -3,12 +3,12 @@
   "name": "SPECTRA VIZ Visualizer",
   "icons": [
     {
-      "src": "https://via.placeholder.com/192",
+      "src": "https://via.placeholder.com/192/0d1117/ffd700?text=SPECTRA",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "https://via.placeholder.com/512",
+      "src": "https://via.placeholder.com/512/0d1117/ffd700?text=SPECTRA",
       "type": "image/png",
       "sizes": "512x512"
     }
@@ -16,5 +16,6 @@
   "start_url": "./index.html",
   "background_color": "#0d1117",
   "theme_color": "#0d1117",
-  "display": "standalone"
+  "display": "standalone",
+  "orientation": "any"
 }
